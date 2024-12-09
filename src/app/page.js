@@ -6,7 +6,7 @@ import {useEffect, useState} from "react";
 
 export default function Home() {
  const [word, setWord] = useState("hello");
- const actions = ['INSERT_word:5','DELETE_2'];
+ const actions = ['INSERT_word:5','DELETE_2','INSERT_a:2'];
 
  function changeWord(action,word_input){
     let action_split = action.split('_');
@@ -34,9 +34,11 @@ export default function Home() {
 
  }
  useEffect( () => {
-      const newWord1 = changeWord(actions[0],word);
-      const newWord2 = changeWord(actions[1],newWord1);
-      console.log('THIS IS THE NEW WORD --> '+newWord2);
+        actions.map((action,actionIdx) => {
+            const newWord = changeWord(actions[actionIdx],word);
+            setWord(newWord);
+        })
+
  },[])
 
 
