@@ -1,6 +1,7 @@
 'use client';
 import Image from "next/image";
 import styles from "./page.module.css";
+import axios from "axios";
 import  './users.css'
 
 import React, {useEffect, useState} from "react";
@@ -29,7 +30,23 @@ export default function Home() {
         }
         fetchUsers();
 
+
     },[]);
+
+    async function fetchWithAxios(){
+        setLoading(true);
+        try {
+            const response = await axios.get(baseUrl);
+            console.log(response.data.results);
+            setUsers((prevUsers) => [...prevUsers, ...response.data.results]);
+            setLoading(false);
+        } catch (error) {
+            console.error("Error fetching data: ", error);
+            setError(error);
+            setLoading(false);
+        }
+
+    }
 
     function UserCard({name,location,email,picture}){
         return(
@@ -53,6 +70,7 @@ export default function Home() {
             {loading && <p>Loading...</p>}
             {!error && <h1 className='title'>Users Fetched</h1>}
             {!error && users.map((user) =>     <UserCard key={user.login.uuid} {...user} />)}
+            {!error && <button onClick={fetchWithAxios}>Fetch More Users</button>}
             {error && <p>Error fetching data</p>}
         </div>
   );
